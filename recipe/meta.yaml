@@ -13,7 +13,7 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 0
+  number: 1
   features:
     - blas_{{ blas_variant }}
   skip:
@@ -26,17 +26,20 @@ requirements:
     - toolchain
     - cmake
     - eigen
-    - numpy x.x
+    - numpy 1.8.*
     - shogun-cpp {{ version }}
     - swig
   run:
     - python
-    - numpy x.x
+    - numpy >=1.8
     - shogun-cpp {{ version }}
 
 test:
   imports:
     - modshogun
+  commands:
+    - conda inspect linkages -p $PREFIX shogun  # [not win]
+    - conda inspect objects -p $PREFIX shogun  # [win]
 
 about:
   home: http://shogun.ml
