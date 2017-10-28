@@ -25,14 +25,40 @@ requirements:
     - setuptools
     - toolchain
     - cmake
-    - eigen
+    - swig
     - numpy 1.8.*
     - shogun-cpp {{ version }}
-    - swig
+    - arpack 3.5.*
+    - bzip2 1.0.*
+    - curl >=7.44.0,<8
+    - eigen
+    - glpk 4.61|4.62
+    - hdf5 1.8.18|1.8.18.*
+    - json-c 0.12|0.12.*
+    - libxml2 2.9.*
+    - lzo 2.*
+    - openblas 0.2.19|0.2.19.*
+    - protobuf 3.4.*
+    - snappy 1.1.6|1.1.7
+    - xz 5.2.*
+    - zlib 1.2.8
   run:
     - python
     - numpy >=1.8
     - shogun-cpp {{ version }}
+    - arpack 3.5.*
+    - bzip2 1.0.*
+    - curl >=7.44.0,<8
+    - glpk 4.61|4.62
+    - hdf5 1.8.18|1.8.18.*
+    - json-c 0.12|0.12.*
+    - libxml2 2.9.*
+    - lzo 2.*
+    - openblas 0.2.19|0.2.19.*
+    - protobuf 3.4.*
+    - snappy 1.1.6|1.1.7
+    - xz 5.2.*
+    - zlib 1.2.8
 
 test:
   imports:
