@@ -1,5 +1,6 @@
 {% set name = "shogun" %}
 {% set version = "6.0.0" %}
+{% set build = 2 %}
 {% set sha256 = "413da26db7fb57aa36c2981bf92d23817c0a29f22051b331dbe5b86e46119748" %}
 {% set blas_variant = "openblas" %}
 
@@ -13,7 +14,7 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 1
+  number: {{ build }}
   features:
     - blas_{{ blas_variant }}
   skip:
