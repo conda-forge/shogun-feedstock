@@ -1,7 +1,16 @@
 {% set name = "shogun" %}
-{% set version = "6.0.0" %}
-{% set build = 3 %}
-{% set sha256 = "413da26db7fb57aa36c2981bf92d23817c0a29f22051b331dbe5b86e46119748" %}
+
+{% set version = "6.1.0" %}
+{% set sha256 = "014a83a48b48674add7b2bcd5f37b7d6123b8c82c2cf3d69851ccb3404e11e1e" %}
+
+# Shogun doesn't produce a single tarball you can build from anymore;
+# need to get the gpl-shogun tarball too. Remember to update this when updating
+# the version!
+{% set gpl_commit = "29ca2ff930cd5d963b3a78e79160cc04d48970c2" %}
+{% set gpl_sha256 = "ff8a46b7775e784f07e9ffb02e7cd9b101f508c1c7b7d8cdbf1024a2efacdb22" %}
+
+{% set build = 0 %}
+
 {% set blas_variant = "openblas" %}
 
 package:
@@ -19,6 +28,48 @@ build:
     - blas_{{ blas_variant }}
   skip:
     - true  # [win]
+  script: |
+    set -ex  # not automatic in conda-build 2
+
+    # HACK: download the gpl tarball
+    # When we migrate to conda-build 3, can have multiple sources:
+    #  https://github.com/conda/conda-build/pull/1929
+    cd src/gpl
+    curl -SsL https://github.com/shogun-toolbox/shogun-gpl/archive/{{ gpl_commit }}.tar.gz > shogun-gpl.tar.gz
+    [[ $(openssl sha256 shogun-gpl.tar.gz | cut -d" " -f2) == "{{ gpl_sha256 }}" ]]
+    tar xf shogun-gpl.tar.gz --strip-components=1
+    rm shogun-gpl.tar.gz
+    cd ../..
+
+    mkdir build
+    cd build
+
+    # figure out include / library paths
+    # https://github.com/conda/conda-build/issues/2130 will be proper solution
+    pyinc=$($PYTHON -c "from distutils import sysconfig; print(sysconfig.get_python_inc())")
+    if [[ $(uname) == "Darwin" ]]; then
+        pylib=$(otool -L $PYTHON | grep 'libpython.*\.dylib' | tr '\t' ' ' | cut -d' ' -f2 | sed "s|@rpath|$PREFIX/lib|")
+    else
+      pylib=$(ldd $PYTHON | grep $PREFIX | grep 'libpython.*\.so' | cut -d' ' -f3)
+    fi
+
+    cmake .. \
+        -DCMAKE_PREFIX_PATH="$PREFIX" \
+        -DCMAKE_INSTALL_PREFIX="$PREFIX" \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_EXAMPLES=OFF \
+        -DBUILD_META_EXAMPLES=OFF \
+        -DENABLE_TESTING=OFF \
+        -DENABLE_COVERAGE=OFF \
+        -DUSE_SVMLIGHT=OFF \
+        -DSWIG_EXECUTABLE=$PREFIX/bin/swig \
+        -DLIBSHOGUN=OFF \
+        -DPYTHON_INCLUDE_DIR=$pyinc \
+        -DPYTHON_LIBRARY=$pylib \
+        -DPYTHON_EXECUTABLE=$PYTHON \
+        -DPythonModular=ON
+    make -j $CPU_COUNT
+    make install -j $CPU_COUNT
 
 requirements:
   build:
@@ -40,6 +91,7 @@ requirements:
     - lzo 2.*
     - openblas 0.2.20|0.2.20.*
     - protobuf 3.4.*
+    - rxcpp 4.0.0
     - snappy 1.1.6|1.1.7
     - xz 5.2.*
     - zlib 1.2.11
@@ -66,7 +118,7 @@ test:
     - modshogun
   commands:
     - conda inspect linkages -p $PREFIX shogun  # [not win]
-    - conda inspect objects -p $PREFIX shogun  # [win]
+    - conda inspect objects -p $PREFIX shogun  # [osx]
 
 about:
   home: http://shogun.ml
