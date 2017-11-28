@@ -1,5 +1,5 @@
 import numpy as np
-import modshogun as sg
+import shogun as sg
 
 X = np.random.randn(100, 3)
 Y = np.random.randn(100, 3) + .5

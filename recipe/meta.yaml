@@ -67,7 +67,7 @@ build:
         -DPYTHON_INCLUDE_DIR=$pyinc \
         -DPYTHON_LIBRARY=$pylib \
         -DPYTHON_EXECUTABLE=$PYTHON \
-        -DPythonModular=ON
+        -DINTERFACE_PYTHON=ON
     make -j $CPU_COUNT
     make install -j $CPU_COUNT
 
