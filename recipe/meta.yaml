@@ -37,8 +37,8 @@ build:
     # HACK: download the gpl tarball
     # When we migrate to conda-build 3, can have multiple sources:
     #  https://github.com/conda/conda-build/pull/1929
-    - python $RECIPE_DIR/get_tarball.py  -c {{ gpl_sha256 }} -p src/gpl --strip-components 1 {{ gpl_url }}  # [unix]
-    - python %RECIPE_DIR%/get_tarball.py -c {{ gpl_sha256 }} -p src/gpl --strip-components 1 {{ gpl_url }}  # [win]
+    python $RECIPE_DIR/get_tarball.py  -c {{ gpl_sha256 }} -p src/gpl --strip-components 1 {{ gpl_url }}  # [unix]
+    python %RECIPE_DIR%/get_tarball.py -c {{ gpl_sha256 }} -p src/gpl --strip-components 1 {{ gpl_url }}  # [win]
 
     mkdir build
     cd build
@@ -81,10 +81,10 @@ build:
         -DLIBSHOGUN=OFF ^                            # [win]
         -DPYTHON_EXECUTABLE=%PYTHON% ^               # [win]
         -DINTERFACE_PYTHON=ON                        # [win]
-    - if errorlevel 1 exit 1                         # [win]
+    if errorlevel 1 exit 1                           # [win]
 
-    - msbuild shogun.sln                             # [win]
-    - if errorlevel 1 exit 1                         # [win]
+    msbuild shogun.sln                               # [win]
+    if errorlevel 1 exit 1                           # [win]
 
 requirements:
   build:
