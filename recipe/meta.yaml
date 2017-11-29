@@ -1,8 +1,8 @@
 {% set name = "shogun" %}
 
-{% set version = "6.1.1" %}
+{% set version = "6.1.2" %}
 {% set commit = 'shogun_' + version %}
-{% set sha256 = "92ba03d6a7e98542bc89fff5bf64064de45bea66b9568abac3f50e98a4326430" %}
+{% set sha256 = "50cd1482d9977933b6ab4e410f4debc00bfa935fdf2812e41edb73504757c0df" %}
 
 # Shogun doesn't produce a single tarball you can build from anymore;
 # need to get the gpl-shogun tarball too. Remember to update this when updating
