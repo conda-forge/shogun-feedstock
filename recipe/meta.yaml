@@ -9,6 +9,7 @@
 # the version!
 {% set gpl_commit = "29ca2ff930cd5d963b3a78e79160cc04d48970c2" %}
 {% set gpl_sha256 = "ff8a46b7775e784f07e9ffb02e7cd9b101f508c1c7b7d8cdbf1024a2efacdb22" %}
+{% set gpl_url = "http://github.com/shogun-toolbox/shogun-gpl/archive/" + gpl_commit + ".tar.gz" %}
 
 {% set build = 0 %}
 
