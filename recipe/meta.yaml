@@ -134,7 +134,7 @@ requirements:
 
 test:
   imports:
-    - modshogun
+    - shogun
   commands:
     - conda inspect linkages -p $PREFIX shogun  # [not win]
     - conda inspect objects -p $PREFIX shogun  # [osx]
