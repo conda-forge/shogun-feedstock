@@ -77,7 +77,7 @@ build:
         -DENABLE_TESTING=OFF ^                       # [win]
         -DENABLE_COVERAGE=OFF ^                      # [win]
         -DUSE_SVMLIGHT=OFF ^                         # [win]
-        -DSWIG_EXECUTABLE=%LIBRARY_BIN\\swig% ^      # [win]
+        -DSWIG_EXECUTABLE=%LIBRARY_BIN%\\swig.exe ^  # [win]
         -DLIBSHOGUN=OFF ^                            # [win]
         -DPYTHON_EXECUTABLE=%PYTHON% ^               # [win]
         -DINTERFACE_PYTHON=ON                        # [win]
