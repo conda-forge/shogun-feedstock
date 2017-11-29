@@ -100,7 +100,9 @@ requirements:
     - vc 14   # [win and py>=35]
     - cmake
     - swig
-    - numpy 1.8.*
+    - numpy 1.8.*   # [unix or (win and py27)]
+    - numpy 1.9.*   # [win and py35]
+    - numpy 1.11.*  # [win and py36]
     - shogun-cpp {{ version }}
     - arpack 3.5.*              # [not win]
     - bzip2 1.0.*
@@ -120,7 +122,9 @@ requirements:
     - zlib 1.2.11
   run:
     - python
-    - numpy >=1.8
+    - numpy >=1.8   # [unix or (win and py27)]
+    - numpy >=1.9   # [win and py35]
+    - numpy >=1.11  # [win and py36]
     - shogun-cpp {{ version }}
     - arpack 3.5.*              # [not win]
     - bzip2 1.0.*
