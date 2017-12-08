@@ -1,14 +1,15 @@
 {% set name = "shogun" %}
 
-{% set version = "6.1.1" %}
+{% set version = "6.1.3" %}
 {% set commit = 'shogun_' + version %}
-{% set sha256 = "92ba03d6a7e98542bc89fff5bf64064de45bea66b9568abac3f50e98a4326430" %}
+{% set sha256 = "75f4d555efe06eaa7c4c12a1dc942f6e4d41a8ed495777a790b9bd9df936c19c" %}
 
 # Shogun doesn't produce a single tarball you can build from anymore;
 # need to get the gpl-shogun tarball too. Remember to update this when updating
 # the version!
 {% set gpl_commit = "29ca2ff930cd5d963b3a78e79160cc04d48970c2" %}
 {% set gpl_sha256 = "ff8a46b7775e784f07e9ffb02e7cd9b101f508c1c7b7d8cdbf1024a2efacdb22" %}
+{% set gpl_url = "http://github.com/shogun-toolbox/shogun-gpl/archive/" + gpl_commit + ".tar.gz" %}
 
 {% set build = 0 %}
 
@@ -26,89 +27,113 @@ source:
 build:
   number: {{ build }}
   features:
-    - blas_{{ blas_variant }}
+    - blas_{{ blas_variant }}  # [not win]
   skip:
-    - true  # [win]
+    - true  # [win32]
+    - true  # [win and py2k]
   script: |
     set -ex  # not automatic in conda-build 2
 
     # HACK: download the gpl tarball
     # When we migrate to conda-build 3, can have multiple sources:
     #  https://github.com/conda/conda-build/pull/1929
-    cd src/gpl
-    curl -SsL https://github.com/shogun-toolbox/shogun-gpl/archive/{{ gpl_commit }}.tar.gz > shogun-gpl.tar.gz
-    [[ $(openssl sha256 shogun-gpl.tar.gz | cut -d" " -f2) == "{{ gpl_sha256 }}" ]]
-    tar xf shogun-gpl.tar.gz --strip-components=1
-    rm shogun-gpl.tar.gz
-    cd ../..
+    python $RECIPE_DIR/get_tarball.py  -c {{ gpl_sha256 }} -p src/gpl --strip-components 1 {{ gpl_url }}  # [unix]
+    python %RECIPE_DIR%/get_tarball.py -c {{ gpl_sha256 }} -p src/gpl --strip-components 1 {{ gpl_url }}  # [win]
 
     mkdir build
     cd build
 
     # figure out include / library paths
     # https://github.com/conda/conda-build/issues/2130 will be proper solution
-    pyinc=$($PYTHON -c "from distutils import sysconfig; print(sysconfig.get_python_inc())")
-    if [[ $(uname) == "Darwin" ]]; then
-        pylib=$(otool -L $PYTHON | grep 'libpython.*\.dylib' | tr '\t' ' ' | cut -d' ' -f2 | sed "s|@rpath|$PREFIX/lib|")
-    else
-      pylib=$(ldd $PYTHON | grep $PREFIX | grep 'libpython.*\.so' | cut -d' ' -f3)
-    fi
+    pyinc=$($PYTHON -c "from distutils import sysconfig; print(sysconfig.get_python_inc())")                           # [unix]
+    pylib=$(otool -L $PYTHON | grep 'libpython.*\.dylib' | tr '\t' ' ' | cut -d' ' -f2 | sed "s|@rpath|$PREFIX/lib|")  # [osx]
+    pylib=$(ldd $PYTHON | grep $PREFIX | grep 'libpython.*\.so' | cut -d' ' -f3)                                       # [linux]
 
-    cmake .. \
-        -DCMAKE_PREFIX_PATH="$PREFIX" \
-        -DCMAKE_INSTALL_PREFIX="$PREFIX" \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DBUILD_EXAMPLES=OFF \
-        -DBUILD_META_EXAMPLES=OFF \
-        -DENABLE_TESTING=OFF \
-        -DENABLE_COVERAGE=OFF \
-        -DUSE_SVMLIGHT=OFF \
-        -DSWIG_EXECUTABLE=$PREFIX/bin/swig \
-        -DLIBSHOGUN=OFF \
-        -DPYTHON_INCLUDE_DIR=$pyinc \
-        -DPYTHON_LIBRARY=$pylib \
-        -DPYTHON_EXECUTABLE=$PYTHON \
-        -DINTERFACE_PYTHON=ON
-    make -j $CPU_COUNT
-    make install -j $CPU_COUNT
+    cmake .. \                                # [unix]
+        -DCMAKE_PREFIX_PATH="$PREFIX" \       # [unix]
+        -DCMAKE_INSTALL_PREFIX="$PREFIX" \    # [unix]
+        -DCMAKE_BUILD_TYPE=Release \          # [unix]
+        -DBUILD_EXAMPLES=OFF \                # [unix]
+        -DBUILD_META_EXAMPLES=OFF \           # [unix]
+        -DENABLE_TESTING=OFF \                # [unix]
+        -DENABLE_COVERAGE=OFF \               # [unix]
+        -DUSE_SVMLIGHT=OFF \                  # [unix]
+        -DSWIG_EXECUTABLE=$PREFIX/bin/swig \  # [unix]
+        -DLIBSHOGUN=OFF \                     # [unix]
+        -DPYTHON_INCLUDE_DIR=$pyinc \         # [unix]
+        -DPYTHON_LIBRARY=$pylib \             # [unix]
+        -DPYTHON_EXECUTABLE=$PYTHON \         # [unix]
+        -DINTERFACE_PYTHON=ON                 # [unix]
+    make -j $CPU_COUNT                        # [unix]
+    make install -j $CPU_COUNT                # [unix]
+
+    cmake .. ^                                       # [win]
+        -G"%CMAKE_GENERATOR%" ^                      # [win]
+        -DCMAKE_PREFIX_PATH="%LIBRARY_PREFIX%" ^     # [win]
+        -DCMAKE_INSTALL_PREFIX="%LIBRARY_PREFIX%" ^  # [win]
+        -DCMAKE_BUILD_TYPE=Release ^                 # [win]
+        -DBUILD_EXAMPLES=OFF ^                       # [win]
+        -DBUILD_META_EXAMPLES=OFF ^                  # [win]
+        -DENABLE_TESTING=OFF ^                       # [win]
+        -DENABLE_COVERAGE=OFF ^                      # [win]
+        -DUSE_SVMLIGHT=OFF ^                         # [win]
+        -DSWIG_EXECUTABLE=%LIBRARY_BIN%\\swig.exe ^  # [win]
+        -DLIBSHOGUN=OFF ^                            # [win]
+        -DPYTHON_EXECUTABLE=%PYTHON% ^               # [win]
+        -DINTERFACE_PYTHON=ON                        # [win]
+    if errorlevel 1 exit 1                           # [win]
+
+    cmake --build . --target _interface_python --config Release  # [win]
+    if errorlevel 1 exit 1                                       # [win]
+
+    cmake --build . --target install --config Release  # [win]
+    if errorlevel 1 exit 1                             # [win]
 
 requirements:
   build:
+    - toolchain
     - python
     - setuptools
-    - toolchain
+    - requests  # used by get_tarball.py
+    - vc 9    # [win and py27]
+    - vc 10   # [win and py34]
+    - vc 14   # [win and py>=35]
     - cmake
     - swig
-    - numpy 1.8.*
+    - numpy 1.8.*   # [unix or (win and py27)]
+    - numpy 1.9.*   # [win and py35]
+    - numpy 1.11.*  # [win and py36]
     - shogun-cpp {{ version }}
-    - arpack 3.5.*
+    - arpack 3.5.*              # [not win]
     - bzip2 1.0.*
     - curl >=7.44.0,<8
     - eigen
     - glpk 4.61|4.62
     - hdf5 1.10.1
-    - json-c 0.12|0.12.*
+    - json-c 0.12|0.12.*        # [not win]
     - libxml2 2.9.*
     - lzo 2.*
-    - openblas 0.2.20|0.2.20.*
-    - protobuf 3.4.*
+    - openblas 0.2.20|0.2.20.*  # [not win]
+    - protobuf 3.4.*            # [not win] # conda-forge protobuf doesn't have C++ version
     - rxcpp 4.0.0
     - snappy 1.1.6|1.1.7
     - xz 5.2.*
     - zlib 1.2.11
   run:
     - python
-    - numpy >=1.8
+    - numpy >=1.8   # [unix or (win and py27)]
+    - numpy >=1.9   # [win and py35]
+    - numpy >=1.11  # [win and py36]
     - shogun-cpp {{ version }}
-    - arpack 3.5.*
+    - arpack 3.5.*              # [not win]
     - bzip2 1.0.*
     - curl >=7.44.0,<8
     - glpk 4.61|4.62
     - hdf5 1.10.1
-    - json-c 0.12|0.12.*
+    - json-c 0.12|0.12.*        # [not win]
     - libxml2 2.9.*
     - lzo 2.*
-    - openblas 0.2.20|0.2.20.*
+    - openblas 0.2.20|0.2.20.*  # [not win]
     - protobuf 3.4.*
     - snappy 1.1.6|1.1.7
     - xz 5.2.*
@@ -119,7 +144,7 @@ test:
     - shogun
   commands:
     - conda inspect linkages -p $PREFIX shogun  # [not win]
-    - conda inspect objects -p $PREFIX shogun  # [osx]
+    - conda inspect objects -p $PREFIX shogun   # [osx]
 
 about:
   home: http://shogun.ml
