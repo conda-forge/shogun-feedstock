@@ -11,7 +11,7 @@
 {% set gpl_sha256 = "ff8a46b7775e784f07e9ffb02e7cd9b101f508c1c7b7d8cdbf1024a2efacdb22" %}
 {% set gpl_url = "http://github.com/shogun-toolbox/shogun-gpl/archive/" + gpl_commit + ".tar.gz" %}
 
-{% set build = 0 %}
+{% set build = 1 %}
 
 {% set blas_variant = "openblas" %}
 
@@ -23,7 +23,11 @@ source:
   fn: shogun_{{ version }}.tar.gz
   url: https://github.com/shogun-toolbox/shogun/archive/{{ commit }}.tar.gz
   sha256: {{ sha256 }}
+  patches:
+    - libpython-linking.patch
 
+{% set lc, vs, ve, prefix, parbuild = "\\", "$", "", "$PREFIX", "-j $CPU_COUNT" %}  # [unix]
+{% set lc, vs, ve, prefix, parbuild = "^", "%", "%", "%LIBRAY_PREFIX%", "" %}       # [win]
 build:
   number: {{ build }}
   features:
@@ -37,8 +41,7 @@ build:
     # HACK: download the gpl tarball
     # When we migrate to conda-build 3, can have multiple sources:
     #  https://github.com/conda/conda-build/pull/1929
-    python $RECIPE_DIR/get_tarball.py  -c {{ gpl_sha256 }} -p src/gpl --strip-components 1 {{ gpl_url }}  # [unix]
-    python %RECIPE_DIR%/get_tarball.py -c {{ gpl_sha256 }} -p src/gpl --strip-components 1 {{ gpl_url }}  # [win]
+    python {{vs}}RECIPE_DIR{{ve}}/get_tarball.py -c {{ gpl_sha256 }} -p src/gpl --strip-components 1 {{ gpl_url }}
 
     mkdir build
     cd build
@@ -49,45 +52,31 @@ build:
     pylib=$(otool -L $PYTHON | grep 'libpython.*\.dylib' | tr '\t' ' ' | cut -d' ' -f2 | sed "s|@rpath|$PREFIX/lib|")  # [osx]
     pylib=$(ldd $PYTHON | grep $PREFIX | grep 'libpython.*\.so' | cut -d' ' -f3)                                       # [linux]
 
-    cmake .. \                                # [unix]
-        -DCMAKE_PREFIX_PATH="$PREFIX" \       # [unix]
-        -DCMAKE_INSTALL_PREFIX="$PREFIX" \    # [unix]
-        -DCMAKE_BUILD_TYPE=Release \          # [unix]
-        -DBUILD_EXAMPLES=OFF \                # [unix]
-        -DBUILD_META_EXAMPLES=OFF \           # [unix]
-        -DENABLE_TESTING=OFF \                # [unix]
-        -DENABLE_COVERAGE=OFF \               # [unix]
-        -DUSE_SVMLIGHT=OFF \                  # [unix]
-        -DSWIG_EXECUTABLE=$PREFIX/bin/swig \  # [unix]
-        -DLIBSHOGUN=OFF \                     # [unix]
-        -DPYTHON_INCLUDE_DIR=$pyinc \         # [unix]
-        -DPYTHON_LIBRARY=$pylib \             # [unix]
-        -DPYTHON_EXECUTABLE=$PYTHON \         # [unix]
-        -DINTERFACE_PYTHON=ON                 # [unix]
-    make -j $CPU_COUNT                        # [unix]
-    make install -j $CPU_COUNT                # [unix]
-
-    cmake .. ^                                       # [win]
-        -G"%CMAKE_GENERATOR%" ^                      # [win]
-        -DCMAKE_PREFIX_PATH="%LIBRARY_PREFIX%" ^     # [win]
-        -DCMAKE_INSTALL_PREFIX="%LIBRARY_PREFIX%" ^  # [win]
-        -DCMAKE_BUILD_TYPE=Release ^                 # [win]
-        -DBUILD_EXAMPLES=OFF ^                       # [win]
-        -DBUILD_META_EXAMPLES=OFF ^                  # [win]
-        -DENABLE_TESTING=OFF ^                       # [win]
-        -DENABLE_COVERAGE=OFF ^                      # [win]
-        -DUSE_SVMLIGHT=OFF ^                         # [win]
+    cmake ..                                      {{ lc }}
+        -G"{{vs}}CMAKE_GENERATOR{{ve}}"           {{ lc }}
+        -DCMAKE_PREFIX_PATH="{{ prefix }}"        {{ lc }}
+        -DCMAKE_INSTALL_PREFIX="{{ prefix }}"     {{ lc }}
+        -DCMAKE_BUILD_TYPE=Release                {{ lc }}
+        -DBUILD_EXAMPLES=OFF                      {{ lc }}
+        -DBUILD_META_EXAMPLES=OFF                 {{ lc }}
+        -DENABLE_TESTING=OFF                      {{ lc }}
+        -DENABLE_COVERAGE=OFF                     {{ lc }}
+        -DUSE_SVMLIGHT=OFF                        {{ lc }}
+        -DSWIG_EXECUTABLE=$PREFIX/bin/swig        \  # [unix]
         -DSWIG_EXECUTABLE=%LIBRARY_BIN%\\swig.exe ^  # [win]
-        -DLIBSHOGUN=OFF ^                            # [win]
-        -DPYTHON_EXECUTABLE=%PYTHON% ^               # [win]
-        -DINTERFACE_PYTHON=ON                        # [win]
-    if errorlevel 1 exit 1                           # [win]
+        -DPYTHON_EXECUTABLE={{vs}}PYTHON{{ve}}    {{ lc }}
+        -DPYTHON_INCLUDE_DIR=$pyinc               \  # [unix]
+        -DPYTHON_LIBRARY=$pylib                   \  # [unix]
+        -DLIBSHOGUN=OFF                           {{ lc }}
+        -DINTERFACE_PYTHON=ON
+    if errorlevel 1 exit 1  # [win]
 
-    cmake --build . --target _interface_python --config Release  # [win]
-    if errorlevel 1 exit 1                                       # [win]
+    cmake --build . --target _interface_python --config Release -- {{ parbuild }}
+    if errorlevel 1 exit 1  # [win]
 
-    cmake --build . --target install --config Release  # [win]
-    if errorlevel 1 exit 1                             # [win]
+    cmake --build . --target install --config Release -- {{ parbuild }}
+    if errorlevel 1 exit 1  # [win]
+
 
 requirements:
   build:
