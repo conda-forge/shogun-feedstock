@@ -11,7 +11,7 @@
 {% set gpl_sha256 = "ff8a46b7775e784f07e9ffb02e7cd9b101f508c1c7b7d8cdbf1024a2efacdb22" %}
 {% set gpl_url = "http://github.com/shogun-toolbox/shogun-gpl/archive/" + gpl_commit + ".tar.gz" %}
 
-{% set build = 0 %}
+{% set build = 1 %}
 
 {% set blas_variant = "openblas" %}
 
@@ -23,6 +23,8 @@ source:
   fn: shogun_{{ version }}.tar.gz
   url: https://github.com/shogun-toolbox/shogun/archive/{{ commit }}.tar.gz
   sha256: {{ sha256 }}
+  patches:
+    - libpython-linking.patch
 
 build:
   number: {{ build }}
