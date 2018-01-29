@@ -27,7 +27,7 @@ source:
     - libpython-linking.patch
 
 {% set lc, vs, ve, prefix, parbuild = "\\", "$", "", "$PREFIX", "-j $CPU_COUNT" %}  # [unix]
-{% set lc, vs, ve, prefix, parbuild = "^", "%", "%", "%LIBRAY_PREFIX%", "" %}       # [win]
+{% set lc, vs, ve, prefix, parbuild = "^", "%", "%", "%LIBRARY_PREFIX%", "" %}      # [win]
 build:
   number: {{ build }}
   features:
