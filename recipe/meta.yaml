@@ -9,9 +9,6 @@
 # the version!
 {% set gpl_commit = "29ca2ff930cd5d963b3a78e79160cc04d48970c2" %}
 {% set gpl_sha256 = "ff8a46b7775e784f07e9ffb02e7cd9b101f508c1c7b7d8cdbf1024a2efacdb22" %}
-{% set gpl_url = "http://github.com/shogun-toolbox/shogun-gpl/archive/" + gpl_commit + ".tar.gz" %}
-
-{% set build = 1 %}
 
 {% set blas_variant = "openblas" %}
 
@@ -20,29 +17,23 @@ package:
   version: {{ version }}
 
 source:
-  fn: shogun_{{ version }}.tar.gz
-  url: https://github.com/shogun-toolbox/shogun/archive/{{ commit }}.tar.gz
-  sha256: {{ sha256 }}
-  patches:
-    - libpython-linking.patch
+  - url: https://github.com/shogun-toolbox/shogun/archive/{{ commit }}.tar.gz
+    sha256: {{ sha256 }}
+    patches:
+      # https://github.com/shogun-toolbox/shogun/issues/4068
+      - libpython-linking.patch
+  - url: https://github.com/shogun-toolbox/shogun-gpl/archive/{{ gpl_commit }}.tar.gz
+    sha256: {{ gpl_sha256 }}
+    folder: src/gpl
 
 {% set lc, vs, ve, prefix, parbuild = "\\", "$", "", "$PREFIX", "-j $CPU_COUNT" %}  # [unix]
 {% set lc, vs, ve, prefix, parbuild = "^", "%", "%", "%LIBRARY_PREFIX%", "" %}      # [win]
 build:
-  number: {{ build }}
+  number: 2
   features:
     - blas_{{ blas_variant }}  # [not win]
-  skip:
-    - true  # [win32]
-    - true  # [win and py2k]
+  skip: true  # [win32 or (win and vc<14)]
   script: |
-    set -ex  # not automatic in conda-build 2
-
-    # HACK: download the gpl tarball
-    # When we migrate to conda-build 3, can have multiple sources:
-    #  https://github.com/conda/conda-build/pull/1929
-    python {{vs}}RECIPE_DIR{{ve}}/get_tarball.py -c {{ gpl_sha256 }} -p src/gpl --strip-components 1 {{ gpl_url }}
-
     mkdir build
     cd build
 
@@ -62,8 +53,6 @@ build:
         -DENABLE_TESTING=OFF                      {{ lc }}
         -DENABLE_COVERAGE=OFF                     {{ lc }}
         -DUSE_SVMLIGHT=OFF                        {{ lc }}
-        -DSWIG_EXECUTABLE=$PREFIX/bin/swig        \  # [unix]
-        -DSWIG_EXECUTABLE=%LIBRARY_BIN%\\swig.exe ^  # [win]
         -DPYTHON_EXECUTABLE={{vs}}PYTHON{{ve}}    {{ lc }}
         -DPYTHON_INCLUDE_DIR=$pyinc               \  # [unix]
         -DPYTHON_LIBRARY=$pylib                   \  # [unix]
@@ -80,53 +69,49 @@ build:
 
 requirements:
   build:
-    - toolchain
-    - python
-    - setuptools
-    - requests  # used by get_tarball.py
-    - vc 9    # [win and py27]
-    - vc 10   # [win and py34]
-    - vc 14   # [win and py>=35]
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
     - cmake
     - swig
-    - numpy 1.8.*   # [unix or (win and py27)]
-    - numpy 1.9.*   # [win and py35]
-    - numpy 1.11.*  # [win and py36]
+  host:
+    - python
+    - setuptools
+    - numpy
     - shogun-cpp {{ version }}
-    - arpack 3.5.*              # [not win]
-    - bzip2 1.0.*
-    - curl >=7.44.0,<8
+    - arpack       # [not win]
+    - bzip2
+    - ctags
+    - curl
     - eigen
-    - glpk 4.61|4.62
-    - hdf5 1.10.1
-    - json-c 0.12|0.12.*        # [not win]
-    - libxml2 2.9.*
-    - lzo 2.*
-    - openblas 0.2.20|0.2.20.*  # [not win]
-    - protobuf 3.4.*            # [not win] # conda-forge protobuf doesn't have C++ version
+    - glpk
+    - hdf5
+    - json-c       # [not win]
+    - libxml2
+    - lzo
+    - openblas     # [not win]
+    - libprotobuf  # [not win]  # conda-forge doesn't have shared lib yet
     - rxcpp 4.0.0
-    - snappy 1.1.6|1.1.7
-    - xz 5.2.*
-    - zlib 1.2.11
+    - snappy
+    - xz
+    - zlib
   run:
     - python
-    - numpy >=1.8   # [unix or (win and py27)]
-    - numpy >=1.9   # [win and py35]
-    - numpy >=1.11  # [win and py36]
-    - shogun-cpp {{ version }}
-    - arpack 3.5.*              # [not win]
-    - bzip2 1.0.*
-    - curl >=7.44.0,<8
-    - glpk 4.61|4.62
-    - hdf5 1.10.1
-    - json-c 0.12|0.12.*        # [not win]
-    - libxml2 2.9.*
-    - lzo 2.*
-    - openblas 0.2.20|0.2.20.*  # [not win]
-    - protobuf 3.4.*
-    - snappy 1.1.6|1.1.7
-    - xz 5.2.*
-    - zlib 1.2.11
+    - {{ pin_compatible('numpy') }}
+    - {{ pin_compatible('shogun-cpp', max_pin='x.x.x') }}
+    - arpack       # [not win]
+    - bzip2
+    - ctags
+    - curl
+    - glpk
+    - hdf5
+    - json-c       # [not win]
+    - libxml2
+    - lzo
+    - openblas     # [not win]
+    - libprotobuf  # [not win]
+    - snappy
+    - xz
+    - zlib
 
 test:
   imports:

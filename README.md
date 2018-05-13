@@ -16,14 +16,16 @@ unified Machine Learning methods.
 Current build status
 ====================
 
-Linux: [![Circle CI](https://circleci.com/gh/conda-forge/shogun-feedstock.svg?style=shield)](https://circleci.com/gh/conda-forge/shogun-feedstock)
-OSX: [![TravisCI](https://travis-ci.org/conda-forge/shogun-feedstock.svg?branch=master)](https://travis-ci.org/conda-forge/shogun-feedstock)
-Windows: [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/conda-forge/shogun-feedstock?svg=True)](https://ci.appveyor.com/project/conda-forge/shogun-feedstock/branch/master)
+[![Linux](https://img.shields.io/circleci/project/github/conda-forge/shogun-feedstock/master.svg?label=Linux)](https://circleci.com/gh/conda-forge/shogun-feedstock)
+[![OSX](https://img.shields.io/travis/conda-forge/shogun-feedstock/master.svg?label=macOS)](https://travis-ci.org/conda-forge/shogun-feedstock)
+[![Windows](https://img.shields.io/appveyor/ci/conda-forge/shogun-feedstock/master.svg?label=Windows)](https://ci.appveyor.com/project/conda-forge/shogun-feedstock/branch/master)
 
 Current release info
 ====================
-Version: [![Anaconda-Server Badge](https://anaconda.org/conda-forge/shogun/badges/version.svg)](https://anaconda.org/conda-forge/shogun)
-Downloads: [![Anaconda-Server Badge](https://anaconda.org/conda-forge/shogun/badges/downloads.svg)](https://anaconda.org/conda-forge/shogun)
+
+| Name | Downloads | Version | Platforms |
+| --- | --- | --- | --- |
+| [![Conda Recipe](https://img.shields.io/badge/recipe-shogun-green.svg)](https://anaconda.org/conda-forge/shogun) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/shogun.svg)](https://anaconda.org/conda-forge/shogun) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/shogun.svg)](https://anaconda.org/conda-forge/shogun) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/shogun.svg)](https://anaconda.org/conda-forge/shogun) |
 
 Installing shogun
 =================
