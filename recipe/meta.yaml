@@ -53,8 +53,6 @@ build:
         -DENABLE_TESTING=OFF                      {{ lc }}
         -DENABLE_COVERAGE=OFF                     {{ lc }}
         -DUSE_SVMLIGHT=OFF                        {{ lc }}
-        -DSWIG_EXECUTABLE=$PREFIX/bin/swig        \  # [unix]
-        -DSWIG_EXECUTABLE=%LIBRARY_BIN%\\swig.exe ^  # [win]
         -DPYTHON_EXECUTABLE={{vs}}PYTHON{{ve}}    {{ lc }}
         -DPYTHON_INCLUDE_DIR=$pyinc               \  # [unix]
         -DPYTHON_LIBRARY=$pylib                   \  # [unix]
