@@ -1,7 +1,7 @@
 arpack:
 - '3.5'
 bzip2:
-- '1.0'
+- '1'
 c_compiler:
 - vs2015
 curl:
@@ -11,9 +11,9 @@ cxx_compiler:
 glpk:
 - '4.65'
 hdf5:
-- 1.10.1
+- 1.10.2
 json_c:
-- '0.12'
+- '0.13'
 libprotobuf:
 - '3.5'
 libxml2:
@@ -28,14 +28,14 @@ pin_run_as_build:
   arpack:
     max_pin: x.x
   bzip2:
-    max_pin: x.x
+    max_pin: x
   curl:
     max_pin: x
   glpk:
     max_pin: x.x
   hdf5:
     max_pin: x.x.x
-  json_c:
+  json-c:
     max_pin: x.x
   libprotobuf:
     max_pin: x.x
@@ -64,5 +64,10 @@ vc:
 - '14'
 xz:
 - '5.2'
+zip_keys:
+- - c_compiler
+  - cxx_compiler
+  - python
+  - vc
 zlib:
 - '1.2'
