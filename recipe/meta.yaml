@@ -78,7 +78,7 @@ requirements:
     - setuptools
     - numpy
     - shogun-cpp {{ version }}
-    - arpack       # [not win]
+    - arpack  >=3.6,<3.7   # [not win]
     - bzip2
     - ctags
     - curl
@@ -98,7 +98,7 @@ requirements:
     - python
     - {{ pin_compatible('numpy') }}
     - {{ pin_compatible('shogun-cpp', max_pin='x.x.x') }}
-    - arpack       # [not win]
+    - arpack  >=3.6,<3.7   # [not win]
     - bzip2
     - ctags
     - curl
