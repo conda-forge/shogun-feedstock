@@ -13,7 +13,7 @@ cxx_compiler:
 glpk:
 - '4.65'
 hdf5:
-- 1.10.3
+- 1.10.4
 libxml2:
 - '2.9'
 lzo:
@@ -27,8 +27,6 @@ pin_run_as_build:
     max_pin: x
   glpk:
     max_pin: x.x
-  hdf5:
-    max_pin: x.x.x
   libxml2:
     max_pin: x.x
   lzo:
