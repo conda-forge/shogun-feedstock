@@ -1,64 +1,59 @@
-arpack:
-- '3.5'
 bzip2:
 - '1'
 c_compiler:
-- toolchain_c
+- vs2015
+channel_sources:
+- conda-forge,defaults
+channel_targets:
+- conda-forge main
 curl:
-- '7.59'
+- '7.64'
 cxx_compiler:
-- toolchain_cxx
+- vs2015
 glpk:
 - '4.65'
 hdf5:
-- 1.10.2
-json_c:
-- '0.12'
-libprotobuf:
-- '3.5'
+- 1.10.5
 libxml2:
 - '2.9'
 lzo:
 - '2'
 numpy:
-- '1.9'
-openblas:
-- 0.2.20
+- '1.14'
 pin_run_as_build:
-  arpack:
-    max_pin: x.x
   bzip2:
     max_pin: x
   curl:
     max_pin: x
   glpk:
     max_pin: x.x
-  hdf5:
-    max_pin: x.x.x
-  json-c:
-    max_pin: x.x
-  libprotobuf:
-    max_pin: x.x
   libxml2:
     max_pin: x.x
   lzo:
     max_pin: x
-  openblas:
-    max_pin: x.x.x
   python:
     min_pin: x.x
     max_pin: x.x
   snappy:
     max_pin: x.x.x
+  vc:
+    max_pin: x
   xz:
     max_pin: x.x
   zlib:
     max_pin: x.x
 python:
-- '3.5'
+- '3.8'
 snappy:
 - 1.1.7
+vc:
+- '14'
 xz:
 - '5.2'
+zip_keys:
+- - python
+  - vc
+  - c_compiler
+  - cxx_compiler
 zlib:
 - '1.2'
