@@ -1,0 +1,74 @@
+BUILD:
+- aarch64-conda_cos7-linux-gnu
+arpack:
+- 3.6.3
+bzip2:
+- '1'
+c_compiler:
+- gcc
+c_compiler_version:
+- '7'
+cdt_arch:
+- aarch64
+cdt_name:
+- cos7
+channel_sources:
+- conda-forge
+channel_targets:
+- conda-forge main
+curl:
+- '7'
+cxx_compiler:
+- gxx
+cxx_compiler_version:
+- '7'
+docker_image:
+- condaforge/linux-anvil-aarch64
+glpk:
+- '4.65'
+hdf5:
+- 1.10.5
+json_c:
+- '0.13'
+libprotobuf:
+- '3.11'
+libxml2:
+- '2.9'
+lzo:
+- '2'
+numpy:
+- '1.16'
+openblas:
+- 0.3.6
+pin_run_as_build:
+  arpack:
+    max_pin: x.x.x
+  bzip2:
+    max_pin: x
+  curl:
+    max_pin: x
+  glpk:
+    max_pin: x.x
+  json-c:
+    max_pin: x.x
+  libxml2:
+    max_pin: x.x
+  lzo:
+    max_pin: x
+  openblas:
+    max_pin: x.x.x
+  python:
+    min_pin: x.x
+    max_pin: x.x
+  xz:
+    max_pin: x.x
+  zlib:
+    max_pin: x.x
+python:
+- 3.7.* *_cpython
+snappy:
+- '1'
+xz:
+- '5.2'
+zlib:
+- '1.2'
