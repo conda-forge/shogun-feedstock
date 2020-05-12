@@ -22,8 +22,6 @@ glpk:
 - '4.65'
 hdf5:
 - 1.10.5
-json_c:
-- '0.13'
 libprotobuf:
 - '3.11'
 libxml2:
@@ -32,8 +30,6 @@ lzo:
 - '2'
 numpy:
 - '1.14'
-openblas:
-- 0.3.6
 pin_run_as_build:
   arpack:
     max_pin: x.x.x
@@ -43,14 +39,10 @@ pin_run_as_build:
     max_pin: x
   glpk:
     max_pin: x.x
-  json-c:
-    max_pin: x.x
   libxml2:
     max_pin: x.x
   lzo:
     max_pin: x
-  openblas:
-    max_pin: x.x.x
   python:
     min_pin: x.x
     max_pin: x.x
