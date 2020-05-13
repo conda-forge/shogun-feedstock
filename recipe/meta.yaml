@@ -16,6 +16,8 @@ source:
       - libpython-linking.patch
       # https://github.com/shogun-toolbox/shogun/pull/4637
       - swig-4-fix.patch
+      # https://github.com/shogun-toolbox/shogun/commit/9540a1dfe160bc8fa908dc6d8c9f02a45d79ceb2
+      - json-is-error.patch
 
 {% set lc, vs, ve, prefix, parbuild = "\\", "$", "", "$PREFIX", "-j $CPU_COUNT" %}  # [unix]
 {% set lc, vs, ve, prefix, parbuild = "^", "%", "%", "%LIBRARY_PREFIX%", "" %}      # [win]
@@ -73,7 +75,7 @@ requirements:
     - eigen
     - glpk
     - hdf5
-    - json-c 0.12
+    - json-c
     - libxml2
     - lzo
     - libprotobuf
@@ -87,8 +89,7 @@ requirements:
     - {{ pin_compatible('shogun-cpp', max_pin='x.x.x') }}
     - ctags
     - glpk
-    - json-c 0.12
-    - snappy
+    - json-c
 
 test:
   imports:
