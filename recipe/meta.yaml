@@ -21,7 +21,7 @@ source:
 {% set lc, vs, ve, prefix, parbuild = "^", "%", "%", "%LIBRARY_PREFIX%", "" %}      # [win]
 build:
   number: 0
-  skip: true  # [win]
+  skip: true  # [win or python_impl == 'pypy']
   script: |
     mkdir build
     cd build
