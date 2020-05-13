@@ -21,7 +21,7 @@ cxx_compiler_version:
 glpk:
 - '4.65'
 hdf5:
-- 1.10.5
+- 1.10.6
 libprotobuf:
 - '3.11'
 libxml2:
