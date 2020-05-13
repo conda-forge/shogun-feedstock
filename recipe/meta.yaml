@@ -32,19 +32,19 @@ build:
     pylib=$(otool -L $PYTHON | grep 'libpython.*\.dylib' | tr '\t' ' ' | cut -d' ' -f2 | sed "s|@rpath|$PREFIX/lib|")  # [osx]
     pylib=$(ldd $PYTHON | grep $PREFIX | grep 'libpython.*\.so' | cut -d' ' -f3)                                       # [linux]
 
-    cmake ..                                      {{ lc }}
-        -G"{{vs}}CMAKE_GENERATOR{{ve}}"           {{ lc }}
-        -DCMAKE_PREFIX_PATH="{{ prefix }}"        {{ lc }}
-        -DCMAKE_INSTALL_PREFIX="{{ prefix }}"     {{ lc }}
-        -DCMAKE_BUILD_TYPE=Release                {{ lc }}
-        -DBUILD_EXAMPLES=OFF                      {{ lc }}
-        -DBUILD_META_EXAMPLES=OFF                 {{ lc }}
-        -DENABLE_TESTING=OFF                      {{ lc }}
-        -DENABLE_COVERAGE=OFF                     {{ lc }}
-        -DPYTHON_EXECUTABLE={{vs}}PYTHON{{ve}}    {{ lc }}
-        -DPYTHON_INCLUDE_DIR=$pyinc               \  # [unix]
-        -DPYTHON_LIBRARIES=$pylib                 \  # [unix]
-        -DLIBSHOGUN=OFF                           {{ lc }}
+    cmake ..                                       {{ lc }}
+        -G"{{ vs }}CMAKE_GENERATOR{{ ve }}"        {{ lc }}
+        -DCMAKE_PREFIX_PATH="{{ prefix }}"         {{ lc }}
+        -DCMAKE_INSTALL_PREFIX="{{ prefix }}"      {{ lc }}
+        -DCMAKE_BUILD_TYPE=Release                 {{ lc }}
+        -DBUILD_EXAMPLES=OFF                       {{ lc }}
+        -DBUILD_META_EXAMPLES=OFF                  {{ lc }}
+        -DENABLE_TESTING=OFF                       {{ lc }}
+        -DENABLE_COVERAGE=OFF                      {{ lc }}
+        -DPYTHON_EXECUTABLE={{ vs }}PYTHON{{ ve }} {{ lc }}
+        -DPYTHON_INCLUDE_DIR=$pyinc                \  # [unix]
+        -DPYTHON_LIBRARIES=$pylib                  \  # [unix]
+        -DLIBSHOGUN=OFF                            {{ lc }}
         -DINTERFACE_PYTHON=ON
     if errorlevel 1 exit 1  # [win]
 
@@ -99,7 +99,7 @@ test:
 
 about:
   home: http://shogun.ml
-  license: GPL-3.0
+  license: GPL-3.0-only
   license_family: GPL
   license_file: COPYING
   summary: 'Unified and efficient Machine Learning'
