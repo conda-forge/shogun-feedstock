@@ -73,7 +73,7 @@ requirements:
     - eigen
     - glpk
     - hdf5
-    - json-c 0.12
+    - json-c
     - libxml2
     - lzo
     - libprotobuf
@@ -87,7 +87,7 @@ requirements:
     - {{ pin_compatible('shogun-cpp', max_pin='x.x.x') }}
     - ctags
     - glpk
-    - json-c 0.12
+    - json-c
     - snappy
 
 test:
