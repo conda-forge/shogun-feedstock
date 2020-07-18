@@ -75,6 +75,9 @@ requirements:
     - hdf5
     - json-c
     - libxml2
+    - libblas
+    - libcblas
+    - liblapack
     - lzo
     - libprotobuf
     - rxcpp 4.1.0
