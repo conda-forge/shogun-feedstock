@@ -21,7 +21,7 @@ docker_image:
 glpk:
 - '4.65'
 hdf5:
-- 1.10.5
+- 1.10.6
 json_c:
 - '0.13'
 libprotobuf:

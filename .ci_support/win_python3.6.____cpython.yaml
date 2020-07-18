@@ -13,7 +13,7 @@ cxx_compiler:
 glpk:
 - '4.65'
 hdf5:
-- 1.10.5
+- 1.10.6
 libxml2:
 - '2.9'
 lzo:
