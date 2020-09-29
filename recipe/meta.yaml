@@ -1,16 +1,8 @@
 {% set name = "shogun" %}
 
-{% set version = "6.1.3" %}
+{% set version = "6.1.4" %}
 {% set commit = 'shogun_' + version %}
-{% set sha256 = "75f4d555efe06eaa7c4c12a1dc942f6e4d41a8ed495777a790b9bd9df936c19c" %}
-
-# Shogun doesn't produce a single tarball you can build from anymore;
-# need to get the gpl-shogun tarball too. Remember to update this when updating
-# the version!
-{% set gpl_commit = "29ca2ff930cd5d963b3a78e79160cc04d48970c2" %}
-{% set gpl_sha256 = "ff8a46b7775e784f07e9ffb02e7cd9b101f508c1c7b7d8cdbf1024a2efacdb22" %}
-
-{% set blas_variant = "openblas" %}
+{% set sha256 = "d618a6c6fa6c230608bda7a17585387b89d11d58085a9457cbfba0c438a08969" %}
 
 package:
   name: {{ name|lower }}
@@ -22,17 +14,14 @@ source:
     patches:
       # https://github.com/shogun-toolbox/shogun/issues/4068
       - libpython-linking.patch
-  - url: https://github.com/shogun-toolbox/shogun-gpl/archive/{{ gpl_commit }}.tar.gz
-    sha256: {{ gpl_sha256 }}
-    folder: src/gpl
+      # https://github.com/shogun-toolbox/shogun/pull/4637
+      - swig-4-fix.patch
 
 {% set lc, vs, ve, prefix, parbuild = "\\", "$", "", "$PREFIX", "-j $CPU_COUNT" %}  # [unix]
 {% set lc, vs, ve, prefix, parbuild = "^", "%", "%", "%LIBRARY_PREFIX%", "" %}      # [win]
 build:
-  number: 3
-  features:
-    - blas_{{ blas_variant }}  # [not win]
-  skip: true  # [win32 or (win and vc<14)]
+  number: 0
+  skip: true  # [win32 or win]
   script: |
     mkdir build
     cd build
@@ -52,10 +41,9 @@ build:
         -DBUILD_META_EXAMPLES=OFF                 {{ lc }}
         -DENABLE_TESTING=OFF                      {{ lc }}
         -DENABLE_COVERAGE=OFF                     {{ lc }}
-        -DUSE_SVMLIGHT=OFF                        {{ lc }}
         -DPYTHON_EXECUTABLE={{vs}}PYTHON{{ve}}    {{ lc }}
         -DPYTHON_INCLUDE_DIR=$pyinc               \  # [unix]
-        -DPYTHON_LIBRARY=$pylib                   \  # [unix]
+        -DPYTHON_LIBRARIES=$pylib                 \  # [unix]
         -DLIBSHOGUN=OFF                           {{ lc }}
         -DINTERFACE_PYTHON=ON
     if errorlevel 1 exit 1  # [win]
@@ -71,7 +59,7 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - cmake
+    - cmake 3.15
     - swig
   host:
     - python
@@ -85,12 +73,14 @@ requirements:
     - eigen
     - glpk
     - hdf5
-    - json-c       # [not win]
+    - json-c
     - libxml2
+    - libblas
+    - libcblas
+    - liblapack
     - lzo
-    - openblas     # [not win]
-    - libprotobuf  # [not win]  # conda-forge doesn't have shared lib yet
-    - rxcpp 4.0.0
+    - libprotobuf
+    - rxcpp 4.1.0
     - snappy
     - xz
     - zlib
@@ -98,20 +88,10 @@ requirements:
     - python
     - {{ pin_compatible('numpy') }}
     - {{ pin_compatible('shogun-cpp', max_pin='x.x.x') }}
-    - arpack       # [not win]
-    - bzip2
     - ctags
-    - curl
     - glpk
-    - hdf5
-    - json-c       # [not win]
-    - libxml2
-    - lzo
-    - openblas     # [not win]
-    - libprotobuf  # [not win]
+    - json-c
     - snappy
-    - xz
-    - zlib
 
 test:
   imports:
@@ -135,3 +115,4 @@ about:
 extra:
   recipe-maintainers:
     - djsutherland
+    - vigsterkr
