@@ -5,9 +5,13 @@ Home: http://shogun.ml
 
 Package license: GPL-3.0
 
-Feedstock license: BSD-3-Clause
+Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/shogun-feedstock/blob/master/LICENSE.txt)
 
 Summary: Unified and efficient Machine Learning
+
+Development: https://github.com/shogun-toolbox/shogun/wiki
+
+Documentation: http://shogun.ml/examples/latest/index.html
 
 The Shogun Machine learning toolbox offers a wide range of efficient and
 unified Machine Learning methods.

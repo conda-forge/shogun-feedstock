@@ -48,5 +48,8 @@ vc:
 - '14'
 xz:
 - '5.2'
+zip_keys:
+- - python
+  - numpy
 zlib:
 - '1.2'
