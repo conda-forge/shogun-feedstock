@@ -1,13 +1,7 @@
-MACOSX_DEPLOYMENT_TARGET:
-- '10.9'
-arpack:
-- 3.6.3
 bzip2:
 - '1'
 c_compiler:
-- clang
-c_compiler_version:
-- '9'
+- vs2017
 channel_sources:
 - conda-forge,defaults
 channel_targets:
@@ -15,46 +9,28 @@ channel_targets:
 curl:
 - '7'
 cxx_compiler:
-- clangxx
-cxx_compiler_version:
-- '9'
+- vs2017
 glpk:
 - '4.65'
 hdf5:
 - 1.10.5
-json_c:
-- '0.13'
-libprotobuf:
-- '3.11'
 libxml2:
 - '2.9'
 lzo:
 - '2'
-macos_machine:
-- x86_64-apple-darwin13.4.0
-macos_min_version:
-- '10.9'
 numpy:
-- '1.14'
-openblas:
-- 0.3.6
+- '1.16'
 pin_run_as_build:
-  arpack:
-    max_pin: x.x.x
   bzip2:
     max_pin: x
   curl:
     max_pin: x
   glpk:
     max_pin: x.x
-  json-c:
-    max_pin: x.x
   libxml2:
     max_pin: x.x
   lzo:
     max_pin: x
-  openblas:
-    max_pin: x.x.x
   python:
     min_pin: x.x
     max_pin: x.x
@@ -63,10 +39,17 @@ pin_run_as_build:
   zlib:
     max_pin: x.x
 python:
-- 3.6.* *_cpython
+- 3.7.* *_cpython
 snappy:
 - '1'
+target_platform:
+- win-64
+vc:
+- '14'
 xz:
 - '5.2'
+zip_keys:
+- - python
+  - numpy
 zlib:
 - '1.2'
