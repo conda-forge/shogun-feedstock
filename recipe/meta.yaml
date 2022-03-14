@@ -29,7 +29,7 @@ source:
 {% set lc, vs, ve, prefix, parbuild = "\\", "$", "", "$PREFIX", "-j $CPU_COUNT" %}  # [unix]
 {% set lc, vs, ve, prefix, parbuild = "^", "%", "%", "%LIBRARY_PREFIX%", "" %}      # [win]
 build:
-  number: 3
+  number: 4
   features:
     - blas_{{ blas_variant }}  # [not win]
   skip: true  # [win32 or (win and vc<14)]
@@ -44,7 +44,7 @@ build:
     pylib=$(ldd $PYTHON | grep $PREFIX | grep 'libpython.*\.so' | cut -d' ' -f3)                                       # [linux]
 
     cmake ..                                      {{ lc }}
-        -G"{{vs}}CMAKE_GENERATOR{{ve}}"           {{ lc }}
+        -G"{{ vs }}CMAKE_GENERATOR{{ ve }}"           {{ lc }}
         -DCMAKE_PREFIX_PATH="{{ prefix }}"        {{ lc }}
         -DCMAKE_INSTALL_PREFIX="{{ prefix }}"     {{ lc }}
         -DCMAKE_BUILD_TYPE=Release                {{ lc }}
@@ -53,7 +53,7 @@ build:
         -DENABLE_TESTING=OFF                      {{ lc }}
         -DENABLE_COVERAGE=OFF                     {{ lc }}
         -DUSE_SVMLIGHT=OFF                        {{ lc }}
-        -DPYTHON_EXECUTABLE={{vs}}PYTHON{{ve}}    {{ lc }}
+        -DPYTHON_EXECUTABLE={{ vs }}PYTHON{{ ve }}    {{ lc }}
         -DPYTHON_INCLUDE_DIR=$pyinc               \  # [unix]
         -DPYTHON_LIBRARY=$pylib                   \  # [unix]
         -DLIBSHOGUN=OFF                           {{ lc }}
@@ -117,8 +117,6 @@ test:
   imports:
     - shogun
   commands:
-    - conda inspect linkages -p $PREFIX shogun  # [not win]
-    - conda inspect objects -p $PREFIX shogun   # [osx]
 
 about:
   home: http://shogun.ml
