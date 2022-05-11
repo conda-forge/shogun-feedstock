@@ -1,7 +1,7 @@
 MACOSX_DEPLOYMENT_TARGET:
 - '10.9'
 arpack:
-- 3.6.3
+- '3.7'
 bzip2:
 - '1'
 c_compiler:
@@ -21,9 +21,7 @@ cxx_compiler_version:
 glpk:
 - '4.65'
 hdf5:
-- 1.10.5
-json_c:
-- '0.13'
+- 1.10.6
 libprotobuf:
 - '3.11'
 libxml2:
@@ -36,8 +34,6 @@ macos_min_version:
 - '10.9'
 numpy:
 - '1.14'
-openblas:
-- 0.3.6
 pin_run_as_build:
   arpack:
     max_pin: x.x.x
@@ -47,14 +43,10 @@ pin_run_as_build:
     max_pin: x
   glpk:
     max_pin: x.x
-  json-c:
-    max_pin: x.x
   libxml2:
     max_pin: x.x
   lzo:
     max_pin: x
-  openblas:
-    max_pin: x.x.x
   python:
     min_pin: x.x
     max_pin: x.x
@@ -63,10 +55,16 @@ pin_run_as_build:
   zlib:
     max_pin: x.x
 python:
-- 3.7.* *_cpython
+- 3.8.* *_cpython
+python_impl:
+- cpython
 snappy:
 - '1'
 xz:
 - '5.2'
+zip_keys:
+- - numpy
+  - python
+  - python_impl
 zlib:
 - '1.2'
